@@ -35,16 +35,21 @@ The model resulted in 12 potential threats. The following table provides a mitig
 | Threat  | Mitigation Strategy | Status: Completed, Ongoing, To Do, N/A |
 | ------------- | ------------- | ---- |
 | Change of execution flow due to Configuration applied by malicious actor  | RBAC restrictions on Configuration creation  |   To Do  |
-| Change of execution flow due to lack of Configuration content verification by Agent and Controller  | Explicit filtering fields in Configuration when defining a discovery handler  |  Ongoing  |
-| Repudiation risks due to lack of extensive logging across Akri components  | Creation of logging standards and adding in support of Prometheus  |  To Do  |
-| Spoofing of IoT devices | To prevent discovery of thousands of fake devices, provide filtering options and ability to specify max number of devices that should be discovered in Configuration. Onus on broker to authenticate with IoT device. |  To Do  |
+| Change of execution flow due to lack of Configuration content verification by Agent and Controller  | Explicit filtering fields in Configuration when defining a discovery handler  |  Completed  |
+| Repudiation risks due to lack of extensive logging across Akri components  | Creation of logging standards and adding in support of Prometheus  |  Completed  |
+| Spoofing of IoT devices | To prevent discovery of thousands of fake devices, provide filtering options and ability to specify max number of devices that should be discovered in Configuration. Onus on broker to authenticate with IoT device. |  Ongoing  |
 | Tampering with discovery result in transit from device to Agent | Protocol specific; however, generally communication with discovery endpoints is unauthenticated. |  N/A  |
 | Sniffing and spoofing communication between API Server and Akri components | By default, data is transferred over plain HTTP connections to/from API server and pods. HTTPS should be enabled in Akri components’ Kubernetes clients. |  To Do |
 | Attacker who has access to host can tamper with device plugin sockets | Operator implements security measures to secure host. |  N/A |
 | Bad broker image due to compromise of container registry or faulty image passed in Configuration | Implement container security tightening by scanning containers for vulnerabilities, using minimal images, and potentially only using signed images. Ensure that only authenticated users can apply Configurations. | To Do |
 | Compromised broker puts IoT device at risk | Make sure broker code is of high quality. |  Ongoing |
-| Attacker can listen to information transferred between device and broker | Brokers should communicate with devices over a secure channel. Credentials should be set in the Configuration as Kubernetes Secrets (managed by a KMS) and mounted into the broker for use. |  Ongoing |
+| Attacker can listen to information transferred between device and broker | Brokers should communicate with devices over a secure channel. Credentials should be set in the Configuration as Kubernetes Secrets (managed by a KMS) and mounted into the broker for use. |  Completed |
 | Actor gains access to device information via service exposed by broker | Limit access to broker service via network policies |  To Do |
+
+In 2023, we updated the threat model to reflect the discovery handlers separate from the Agent (non-embedded into Agent). Below is the updated threat model:
+
+![Updated Akri Threat Model](../media/updated-akri-threat-model.png "Akri Updated Threat Model")
+
 
 ## Restricting Configuration creation via RBAC
 Akri discovers small devices using a discover handler and filters specified in an Akri Configuration. Then, Akri deploys Pods with an image specified in the Configuration as workloads to the discovered devices. That Configuration is the source of truth and initiates a series of actions, as shown in the Akri threat model. The Configurations can also specify Kubernetes Secrets that are passed to broker Pods. It is imperative that only authenticated users can create/modify/delete Configurations. If a Configuration can be trusted, then Akri can trust that the operator wants the broker image specified in the Configuration to be used as broker pods. In turn, devices can trust broker pods via authentication with credentials passed to the broker via the Configuration. If someone schedules their own pod that requests a resource/device advertised by the Akri Agent, it is up to them to provide proper credentials to the pod and up to the device to request appropriate authentication. 
