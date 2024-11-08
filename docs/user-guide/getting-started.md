@@ -124,6 +124,23 @@ This installation can be expanded to install multiple Discovery Handlers and/or 
 
 See [modifying an Akri Installation](customizing-an-akri-installation.md) to learn about how to use Akri's Helm chart to install additional Configurations and Discovery Handlers.
 
+### Alternative installation method via Glasskube
+
+To install Akri using [Glasskube](https://glasskube.dev/), you can select "Akri" from the "ClusterPackages" tab in the Glasskube GUI, choose your Kubernetes distrubtion and toggle whether you want to use the latest containers of the Akri components or not, then click "install" or you can run the following command:
+```
+glasskube install akri
+```
+Example with value definitions: 
+```
+glasskube install akri --value=containerRuntimeSocket='' --value=useLatestContainers="True"
+```
+Enables Akri installation on Minikube or Kubernetes and uses the latest containers of the Akri components.
+
+Uninstall command: 
+```
+glasskube uninstall akri
+```
+
 ### Inspecting an Akri Installation
 
 * Run `kubectl get crd`, and you should see Akri's two CRDs listed. 
