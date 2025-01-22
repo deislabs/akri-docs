@@ -22,8 +22,10 @@ Discovery Handlers are passed discovery details that are set in a Configuration 
 | :--- | :--- | :--- | :--- |
 | udev.configuration.discoveryDetails.udevRules | array of udev rules | empty | udev rule [supported by the udev Discovery Handler](#udev-rule-format) |
 | udev.configuration.discoveryDetails.groupRecursive | boolean | false | If set to true, group devices with a matching parent |
+| udev.configuration.discoveryDetails.permissions | string | rwm | udev device mount permissions (**r**ead, **w**rite, **m**odify) |
 
 The udev Discovery Handler parses the udev rules listed in a Configuration, searches for them using udev, and returns a list of discovered device nodes (ie: /dev/video0). It parses the udev rules via a grammar [grammar](https://github.com/project-akri/akri/blob/main/discovery-handlers/udev/src/udev_rule_grammar.pest) Akri has created. It expects the udev rules to be formatted according to the [Linux Man pages](https://linux.die.net/man/7/udev).
+Additionally, the permissions for the device mount are defined as well and are set to `rwm` (read, write, modify) by default.
 
 #### Udev rule format
 
